@@ -1,11 +1,11 @@
 import './App.css';
 import React, {Component} from 'react';
 import Customer from './components/Customer';
+import CustomerAdd from './components/CustomerAdd';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
-import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import { withStyles } from '@material-ui/core/styles';
@@ -37,11 +37,30 @@ const styles = theme => ({
 })
 
 class App extends Component {
-  state = {
-    customers: "",
-    completed : 0
+
+  constructor(props)
+  {
+    super(props);
+    this.state ={
+      customers : '',
+      completed : 0
+    }
   }
 
+  stateRefresh = () =>
+  {
+    this.setState(
+      {
+        customers : '',
+        completed : 0
+      }
+    );
+    this.callApi()
+    .then(res => this.setState({customers: res}))
+    .catch(err => console.log(err));
+  }
+  
+     
   componentDidMount()
   {
     this.timer = setInterval(this.progress, 20);
@@ -65,6 +84,7 @@ class App extends Component {
   {
     const {classes} = this.props
     return (
+      <div>
       <Paper className = {classes.root}>
         <Table className = {classes.table}>
           <TableHead>
@@ -81,13 +101,16 @@ class App extends Component {
           {this.state.customers ? this.state.customers.map(c => { return (
                 <Customer key={c.id} id ={c.id} image ={c.image} name= {c.name} birthday={c.birthday} gender={c.gender} job={c.job} />   
           ); 
-          }) : <TableRow>
+          }) : 
+              <TableRow>
                 <TableCell colSpan="6" aligin="center"></TableCell>
-                <CircularProgress className={classes.progress} variant="Determinate" value={this.state.completed}></CircularProgress>
+                <CircularProgress className={classes.progress} variant="indeterminate" value={this.state.completed}></CircularProgress>
               </TableRow>}
           </TableBody>
         </Table>
       </Paper>
+      <CustomerAdd stateRefresh={this.stateRefresh}/>
+      </div>
     );
   }
 }

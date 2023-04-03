@@ -8,6 +8,17 @@
 # testing
 /coverage
 
+# database
+/databse.json
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
 # production
 /build
 
